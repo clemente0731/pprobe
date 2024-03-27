@@ -11,3 +11,6 @@ __pycache__
 *.profraw
 *.md5
 *.run
+build/
+dist/
+pthook.egg-info/
