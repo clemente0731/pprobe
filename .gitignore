@@ -1,0 +1,13 @@
+
+
+*.pyc
+.vscode
+.idea
+.vim/
+.clangd/
+.cache/
+__pycache__
+*.log
+*.profraw
+*.md5
+*.run
