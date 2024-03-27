@@ -10,8 +10,7 @@ def main():
     os.environ['PYTHONPATH'] = boot_dir
     # 执行后面的 python 程序命令
     # sys.executable 是 python 解释器程序的绝对路径 ``which python``
-    # >>> sys.executable
-    # '/usr/local/var/pyenv/versions/3.5.1/bin/python3.5'
+
     print("sys.executable", sys.executable)
     print("sys.argv", sys.argv)
     os.execl(sys.executable, sys.executable, *args)
