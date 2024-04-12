@@ -15,26 +15,26 @@ def read_requirements(file_path):
 
     """
     with open(file_path) as f:
-        print("pthook install_requires:", f.read().splitlines())
+        print("pprobe install_requires:", f.read().splitlines())
         return f.read().splitlines()
 
 
 setup(
-    name="pthook",
+    name="pprobe",
     version="1.0.0",
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     install_requires=read_requirements("./requirements.txt"),
-    entry_points={
-        "console_scripts": [
-            "pthook = agent",
-        ],
-    },
+    # entry_points={
+    #     "console_scripts": [
+    #         "pprobe = agent",
+    #     ],
+    # },
     author="clemente0620",
     author_email="clemente0620@gmail.com",
-    description="A hook tool for pytorch",
-    long_description="A hook tool for pytorch, providing all the AI CHIPS to run torch",
-    url="https://www.pthook.com/pthook",
+    description="A hook tool for python",
+    long_description="A hook tool for python",
+    url="https://www.pprobe.com/pprobe",
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
