@@ -18,7 +18,7 @@ class MetaPathFinder:
 class MetaPathLoader:
 
     def load_module(self, fullname):
-        # print('load_module {}'.format(fullname))
+        Logger.info('load_module {}'.format(fullname))
         # ``sys.modules`` 中保存的是已经导入过的 module
         if fullname in sys.modules:
             return sys.modules[fullname]
@@ -27,12 +27,10 @@ class MetaPathLoader:
         # 防止下面执行 import_module 的时候再次触发此 finder
         # 从而出现递归调用的问题
         finder = sys.meta_path.pop(0)
-        # 导入 module
         module = importlib.import_module(fullname)
-
         module_hook(fullname, module)
-
         sys.meta_path.insert(0, finder)
+
         return module
 
 sys.meta_path.insert(0, MetaPathFinder())

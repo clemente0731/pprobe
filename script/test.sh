@@ -7,11 +7,7 @@ project_dir=$(git rev-parse --show-toplevel)
 # 切换到项目根目录
 cd "${project_dir}"
 
-# 清理项目目录
-# git clean -dxf
+cd pprobe/tests
 
-# 构建 wheel 包
-python setup.py bdist_wheel
+python xtest_torchvision_model.py -a resnet50 --epochs 1 -b 12 -p 1 --seed 42 --dummy
 
-# 打印生成的 wheel 包列表
-ls -thl dist
