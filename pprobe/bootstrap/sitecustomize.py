@@ -1,1 +1,1 @@
-import _hook
+from pprobe.bootstrap import _hook
