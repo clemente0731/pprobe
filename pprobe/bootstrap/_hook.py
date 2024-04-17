@@ -2,14 +2,15 @@ import functools
 import importlib
 import sys
 import time
-
-_hook_modules = {'hello_torch'}
-
+from .logging import Logger
+_hook_modules = {'torch'}
+func_counts = 0
 
 class MetaPathFinder:
 
     def find_module(self, fullname, path=None):
-        print('find_module {}'.format(fullname))
+        Logger.info('find_module {}'.format(fullname))
+        # print('find_module {}'.format(fullname))
         if fullname in _hook_modules:
             return MetaPathLoader()
 
@@ -17,7 +18,7 @@ class MetaPathFinder:
 class MetaPathLoader:
 
     def load_module(self, fullname):
-        print('load_module {}'.format(fullname))
+        # print('load_module {}'.format(fullname))
         # ``sys.modules`` 中保存的是已经导入过的 module
         if fullname in sys.modules:
             return sys.modules[fullname]
@@ -37,21 +38,22 @@ class MetaPathLoader:
 sys.meta_path.insert(0, MetaPathFinder())
 
 
-def module_hook(fullname, module):
-    if fullname == 'hello_torch':
-        # monkey-patch 
-        # 这里把 torch.add替换成torch.sub
-        module.torch_add = func_wrapper(module.torch_sub)
 
-
-def func_wrapper(func):
+def func_count_wrapper(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        print("开始函数 == func")
+        global func_counts
         start = time.time()
         result = func(*args, **kwargs)
         end = time.time()
-        print("结束函数 == func")
-        print("花费时间 {}s".format(end - start))
+        func_counts += 1
+        print(f"func_name {func} --> counts {func_counts}")
         return result
     return wrapper
+
+def module_hook(fullname, module):
+    print("xxxxxxxxxxxxxxxxx111")
+    if fullname == "torch":
+        print("xxxxxxxxxxxxxxxxx222")
+        # torch.Tensor.backward 和 torch.autograd.backward 是等价的
+        module.autograd.backward = func_count_wrapper(module.autograd.backward)

@@ -22,12 +22,13 @@ def read_requirements(file_path):
 setup(
     name="pprobe",
     version="1.0.0",
-    packages=find_packages(exclude=["tests"]),
+    packages=find_packages(exclude=["pprobe/tests"]),
     include_package_data=True,
     install_requires=read_requirements("./requirements.txt"),
-    package_data={
-        '': ['*.pth'],  # 添加所有.pth文件到安装中
-    },
+    # package_data={
+    #     '': ['*.pth'],  # 添加所有.pth文件到安装中
+    # },
+
     author="clemente0620",
     author_email="clemente0620@gmail.com",
     description="A hook tool for python",
