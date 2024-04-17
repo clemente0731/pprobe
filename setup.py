@@ -25,11 +25,9 @@ setup(
     packages=find_packages(exclude=["tests"]),
     include_package_data=True,
     install_requires=read_requirements("./requirements.txt"),
-    # entry_points={
-    #     "console_scripts": [
-    #         "pprobe = agent",
-    #     ],
-    # },
+    package_data={
+        '': ['*.pth'],  # 添加所有.pth文件到安装中
+    },
     author="clemente0620",
     author_email="clemente0620@gmail.com",
     description="A hook tool for python",
