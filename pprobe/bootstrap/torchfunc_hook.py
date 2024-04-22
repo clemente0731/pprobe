@@ -7,6 +7,8 @@ import time
 import os
 import torch.distributed as dist
 from torch.overrides import TorchFunctionMode, resolve_name, is_tensor_like
+import torch.distributed as dist
+
 
 class TorchFunctioContext(TorchFunctionMode):
     def __init__(self):
@@ -16,55 +18,103 @@ class TorchFunctioContext(TorchFunctionMode):
         self.filename = self.generate_filename()
 
         # 初始化 CSV 文件并写入标题行
-        with open(self.filename, mode='w', newline='') as file:
+        with open(self.filename, mode="w", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["Index", "Function", "Metadata_args_1", "Metadata_args_2", "Metadata_args_3", "Metadata_args_4", "Metadata_args_5", "Metadata_args_6", "Metadata_args_7", "Metadata_args_8", "Kwargs", "Types", "Raw_Function"])
+            writer.writerow(
+                [
+                    "Index",
+                    "Function",
+                    "Metadata_args_1",
+                    "Metadata_args_2",
+                    "Metadata_args_3",
+                    "Metadata_args_4",
+                    "Metadata_args_5",
+                    "Metadata_args_6",
+                    "Metadata_args_7",
+                    "Metadata_args_8",
+                    "Metadata_output",
+                    "Kwargs",
+                    "Types",
+                    "Raw_Function",
+                ]
+            )
 
+    def is_multi_gpu_multi_rank(self):
+        # Get the number of available GPUs
+        num_gpus = torch.cuda.device_count()
 
-    def get_tensors_metadata(self, func_args):
+        # Check if multiple GPUs are available
+        if num_gpus > 1:
+            # Check if distributed training is enabled
+            if dist.is_available() and dist.is_initialized():
+                print(f"Detected {num_gpus} GPUs in multi-GPU multi-rank setup.")
+                return True
+        print(f"Detected {num_gpus} GPU(s) in single-GPU setup.")
+        return False
+
+    def get_input_metadata(self, func_args):
         meta_list = []
+
         if isinstance(func_args, tuple):
             for idx, tensor in enumerate(func_args):
+                meta = {"args_idx": idx}  # Initialize the meta dictionary
+
                 if isinstance(tensor, torch.Tensor):
-                    # 求平均值 解决long类型的报错 需要提前转成 float
                     mean_value = torch.mean(tensor.float()).item()
-                    # 求标准差 解决long类型的报错 需要提前转成 float
                     std_dev = torch.std(tensor.float()).item()
-                    # 获取dtype
                     dtype = tensor.dtype
-                    # 获取形状
                     shape = tensor.shape
-                    # 构造元数据字典
-                    meta = {
-                        "args_idx": idx,
-                        "Mean": mean_value,
-                        "Standard Deviation": std_dev,
-                        "Dtype": dtype,
-                        "Shape": shape,
-                        "TensorOrNot": True
-                    }
-                    meta_list.append(meta)
+
+                    # Assign values to meta dictionary keys
+                    meta["input_mean"] = mean_value
+                    meta["input_std"] = std_dev
+                    meta["input_dtype"] = dtype
+                    meta["input_shape"] = shape
+                    meta["input_tensor_or_not"] = True
 
                 if isinstance(tensor, (int, float, bool)):
-                    meta = {
-                        "args_idx": idx,
-                        "Mean": tensor,
-                        "Standard Deviation": np.std([tensor]),
-                        "Dtype": type(tensor),
-                        "Shape": 1,
-                        "TensorOrNot": False
-                    }
-                    meta_list.append(meta)
-        # print(f"tensors_metadata: {meta_list}")
+                    # Assign values to meta dictionary keys
+                    meta["input_mean"] = tensor
+                    meta["input_std"] = np.std([tensor])
+                    meta["input_dtype"] = type(tensor)
+                    meta["input_shape"] = 1
+                    meta["input_tensor_or_not"] = False
+
+                meta_list.append(meta)
+
         return meta_list
 
+    def get_output_metadata(self, output_val):
+        output_meta = {}
+
+        if isinstance(output_val, torch.Tensor):
+            output_val_float = output_val.float()
+            output_meta["output_mean"] = output_val_float.mean().item()
+            output_meta["output_std"] = output_val_float.std().item()
+            output_meta["output_dtype"] = output_val.dtype
+            output_meta["output_shape"] = output_val.shape
+            output_meta["output_tensor_or_not"] = True
+
+        elif isinstance(output_val, (int, float, bool)):
+            output_meta["output_mean"] = output_val
+            output_meta["output_std"] = np.std([output_val])
+            output_meta["output_dtype"] = type(output_val)
+            output_meta["output_shape"] = 1
+            output_meta["output_tensor_or_not"] = False
+
+        return output_meta
+
     def generate_filename(self):
-        # 获取当前日期和时间
+        # Get current date and time
         now = datetime.now()
-        # 格式化日期和时间字符串
-        timestamp = now.strftime("%Y%m%d%H%M")
-        # 构建文件名
-        filename = f"{timestamp}_function_dump.csv"
+
+        # Check if it's multi-GPU multi-rank or single-GPU
+        if self.is_multi_gpu_multi_rank():
+            rank = dist.get_rank()
+            filename = f"{now.strftime('%Y%m%d%H%M')}_function_rank_{rank}_dump.csv"
+        else:
+            filename = f"{now.strftime('%Y%m%d%H%M')}_function_singlecard_dump.csv"
+
         return filename
 
     def fill_missing_values(self, meta):
@@ -73,24 +123,45 @@ class TorchFunctioContext(TorchFunctionMode):
             meta.append("NA")
         return meta
 
-
     def __torch_function__(self, func, types, args, kwargs=None):
         # 打印 torch module接口
         self.func_idx += 1
-        meta = self.get_tensors_metadata(args)
-        meta = self.fill_missing_values(meta)
+
+        output = func(*args, **(kwargs or {}))
+
+        print(f"{resolve_name(func)}() ===== type(output) {type(output)}", flush=True)
+
+        input_meta = self.get_input_metadata(args)
+        output_meta = self.get_output_metadata(output)
+
+        input_meta = self.fill_missing_values(input_meta)
         # 填充缺失值
-        #print(f"[PYTORCH FUNCTION]: idx:{self.func_idx}, func_name:{resolve_name(func)}, meta:{meta}, kwargs: {kwargs} , types: {types}, raw_func: {func} \n",  flush=True)
+        # print(f"[PYTORCH FUNCTION]: idx:{self.func_idx}, func_name:{resolve_name(func)}, meta:{meta}, kwargs: {kwargs} , types: {types}, raw_func: {func} \n",  flush=True)
 
-        with open(self.filename, mode='a', newline='') as file:
+        with open(self.filename, mode="a", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow([self.func_idx, resolve_name(func), meta[0], meta[1], meta[2], meta[3],meta[4],meta[5],meta[6],meta[7], kwargs, types, func])
+            writer.writerow(
+                [
+                    self.func_idx,
+                    resolve_name(func),
+                    input_meta[0],
+                    input_meta[1],
+                    input_meta[2],
+                    input_meta[3],
+                    input_meta[4],
+                    input_meta[5],
+                    input_meta[6],
+                    input_meta[7],
+                    output_meta,
+                    kwargs,
+                    types,
+                    func,
+                ]
+            )
 
-        out = func(*args, **(kwargs or {}))
-        # get_tensors_metadata(args)
+        # get_input_metadata(args)
         # print(f"{resolve_name(func)}(*{args}, **{kwargs})", flush=True)
-        return out
-
+        return output
 
 
 # context = TorchFunctioContext()

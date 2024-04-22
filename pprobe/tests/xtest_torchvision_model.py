@@ -30,6 +30,11 @@ USAGE:
     python xtest_torchvision_model.py -a resnet50 --epochs 1 -b 12 -p 1 --seed 42 --dummy
 """
 
+from pprobe.bootstrap import torchfunc_hook
+context = torchfunc_hook.TorchFunctioContext()
+context.__enter__()
+
+
 model_names = sorted(
     name
     for name in models.__dict__
