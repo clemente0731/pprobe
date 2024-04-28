@@ -57,8 +57,11 @@ def func_torch_distributed_wrapper(func):
         if callable(func):
             result = func(*args, **kwargs)
             if isinstance(args, tuple):
-                args_info = ", ".join([f"args_{idx} shape {arg.shape}, dtype {arg.dtype} " for idx, arg in enumerate(args)])
-                Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__} {args_info}, kwargs {kwargs}")
+                try:
+                    args_info = ", ".join([f"args_{idx} shape {arg.shape}, dtype {arg.dtype} " for idx, arg in enumerate(args)])
+                    Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__} {args_info}, kwargs {kwargs}")
+                except:
+                    Logger.warn(f"[PPROBE] torch.distributed.{func.__qualname__} 出错了 需要排查一下\n")
             else:
                 Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__} args {args}, kwargs {kwargs} ")
             return result
