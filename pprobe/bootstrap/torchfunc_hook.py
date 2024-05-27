@@ -10,7 +10,24 @@ from torch.overrides import TorchFunctionMode, resolve_name, is_tensor_like
 import torch.distributed as dist
 
 
-class TorchFunctioContext(TorchFunctionMode):
+class TorchFunctionContext(TorchFunctionMode):
+    """
+    USAGE:
+
+
+    from pprobe.bootstrap import torchfunc_hook
+    context=torchfunc_hook.TorchFunctionContext()
+    context.__enter__()
+
+    # Place the code block that needs to be managed here. like:
+    import torch
+    a = torch.tensor([1, 2, 3], dtype=torch.float32)
+    b = torch.tensor([4, 5, 6], dtype=torch.float32)
+    c = a + b
+
+
+    context.__exit__()
+    """
     def __init__(self):
         super().__init__()
         self.func_idx = 0
@@ -129,7 +146,11 @@ class TorchFunctioContext(TorchFunctionMode):
 
         output = func(*args, **(kwargs or {}))
 
-        print(f"{resolve_name(func)}() ===== type(output) {type(output)}", flush=True)
+        if any(keyword in resolve_name(func) for keyword in ["dtype", "shape"]):
+            # If the function name includes "torch.Tensor.dtype" or "torch.Tensor.shape", return the output value directly without further processing
+            return output
+
+        # print(f"{resolve_name(func)}() ===== type(output) {type(output)}", flush=True)
 
         input_meta = self.get_input_metadata(args)
         output_meta = self.get_output_metadata(output)
@@ -164,5 +185,147 @@ class TorchFunctioContext(TorchFunctionMode):
         return output
 
 
-# context = TorchFunctioContext()
-# context.__enter__()
+class TorchFunctionMiniContext(TorchFunctionMode):
+    """
+    USAGE:
+
+
+    from pprobe.bootstrap import torchfunc_hook
+    context=torchfunc_hook.TorchFunctionMiniContext()
+    context.__enter__()
+
+    # Place the code block that needs to be managed here. like:
+    import torch
+    a = torch.tensor([1, 2, 3], dtype=torch.float32)
+    b = torch.tensor([4, 5, 6], dtype=torch.float32)
+    c = a + b
+
+
+    context.__exit__()
+    """
+    def __init__(self):
+        super().__init__()
+        self.func_idx = 0
+
+        self.filename = self.generate_filename()
+
+        # 初始化 CSV 文件并写入标题行
+        with open(self.filename, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(
+                [
+                    "Index",
+                    "Function",
+                    "Kwargs",
+                    "Types",
+                    "Raw_Function",
+                ]
+            )
+
+    def is_multi_gpu_multi_rank(self):
+        # Get the number of available GPUs
+        num_gpus = torch.cuda.device_count()
+
+        # Check if multiple GPUs are available
+        if num_gpus > 1:
+            # Check if distributed training is enabled
+            if dist.is_available() and dist.is_initialized():
+                print(f"Detected {num_gpus} GPUs in multi-GPU multi-rank setup.")
+                return True
+        print(f"Detected {num_gpus} GPU(s) in single-GPU setup.")
+        return False
+
+    def get_input_metadata(self, func_args):
+        meta_list = []
+
+        if isinstance(func_args, tuple):
+            for idx, tensor in enumerate(func_args):
+                meta = {"args_idx": idx}  # Initialize the meta dictionary
+
+                if isinstance(tensor, torch.Tensor):
+                    dtype = tensor.dtype
+                    shape = tensor.shape
+
+                    # Assign values to meta dictionary keys
+                    meta["input_dtype"] = dtype
+                    meta["input_shape"] = shape
+                    meta["input_tensor_or_not"] = True
+
+                if isinstance(tensor, (int, float, bool)):
+                    # Assign values to meta dictionary keys
+                    meta["input_dtype"] = type(tensor)
+                    meta["input_shape"] = 1
+                    meta["input_tensor_or_not"] = False
+
+                meta_list.append(meta)
+
+        return meta_list
+
+    def get_output_metadata(self, output_val):
+        output_meta = {}
+
+        if isinstance(output_val, torch.Tensor):
+            output_meta["output_dtype"] = output_val.dtype
+            output_meta["output_shape"] = output_val.shape
+            output_meta["output_tensor_or_not"] = True
+
+        elif isinstance(output_val, (int, float, bool)):
+            output_meta["output_dtype"] = type(output_val)
+            output_meta["output_shape"] = 1
+            output_meta["output_tensor_or_not"] = False
+
+        return output_meta
+
+    def generate_filename(self):
+        # Get current date and time
+        now = datetime.now()
+
+        # Check if it's multi-GPU multi-rank or single-GPU
+        if self.is_multi_gpu_multi_rank():
+            rank = dist.get_rank()
+            filename = f"{now.strftime('%Y%m%d%H%M')}_mini_function_rank_{rank}_dump.csv"
+        else:
+            filename = f"{now.strftime('%Y%m%d%H%M')}_mini_function_singlecard_dump.csv"
+
+        return filename
+
+    def fill_missing_values(self, meta):
+        # 如果 meta 的长度小于 8，则填充 "NA"，使其长度为 8
+        while len(meta) < 8:
+            meta.append("NA")
+        return meta
+
+    def __torch_function__(self, func, types, args, kwargs=None):
+        self.func_idx += 1
+
+        output = func(*args, **(kwargs or {}))
+
+
+        if any(keyword in resolve_name(func) for keyword in ["dtype", "shape"]):
+            # If the function name includes "torch.Tensor.dtype" or "torch.Tensor.shape", return the output value directly without further processing
+            return output
+    
+        print(f"{resolve_name(func)}() ===== type(output) {type(output)}", flush=True)
+
+        input_meta = self.get_input_metadata(args)
+        output_meta = self.get_output_metadata(output)
+
+        input_meta = self.fill_missing_values(input_meta)
+        # 填充缺失值
+        # print(f"[PYTORCH FUNCTION]: idx:{self.func_idx}, func_name:{resolve_name(func)}, meta:{meta}, kwargs: {kwargs} , types: {types}, raw_func: {func} \n",  flush=True)
+
+        with open(self.filename, mode="a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(
+                [
+                    self.func_idx,
+                    resolve_name(func),
+                    kwargs,
+                    types,
+                    func,
+                ]
+            )
+
+        # get_input_metadata(args)
+        # print(f"{resolve_name(func)}(*{args}, **{kwargs})", flush=True)
+        return output
