@@ -31,7 +31,7 @@ USAGE:
 """
 
 from pprobe.bootstrap import torchfunc_hook
-context = torchfunc_hook.TorchFunctioContext()
+context = torchfunc_hook.TorchFunctionContext()
 context.__enter__()
 
 
