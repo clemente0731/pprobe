@@ -9,5 +9,5 @@ cd "${project_dir}"
 
 cd pprobe/tests
 
-python xtest_torchvision_model.py -a resnet50 --epochs 1 -b 12 -p 1 --seed 42 --dummy
-
+time python xtest_torchvision_model_mini_ctx.py -a resnet50 --epochs 1 -b 12 -p 1 --seed 42 --dummy
+# time python xtest_torchvision_model_normal_ctx.py -a resnet50 --epochs 1 -b 12 -p 1 --seed 42 --dummy
