@@ -10,11 +10,11 @@ def check_and_run_hook():
 
     if pprobe_enabled and pprobe_enabled == 1:
         # generic hook
-        from pprobe.bootstrap import _generic_hook
+        from pprobe.bootstrap import python_generic_hook
     elif pprobe_enabled and pprobe_enabled == 2:
         # torch func hook
-        from pprobe.bootstrap import torchfunc_hook
-        context=torchfunc_hook.TorchFunctionContext()
+        from pprobe.bootstrap import pytorch_generic_hook
+        context=pytorch_generic_hook.TorchFunctionContext()
         context.__enter__()
     else:
         # Print the warning message only once
