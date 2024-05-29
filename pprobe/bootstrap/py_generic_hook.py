@@ -1,7 +1,7 @@
 import importlib
 import sys
 from .logging import Logger
-from .pytorch_specific_hook import torch_hook_fn
+from .pt_specific_hook import torch_hook_fn
 
 _hook_modules = {'torch'}
 
