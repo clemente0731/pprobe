@@ -41,6 +41,11 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    entry_points={
+        "console_scripts": [
+            "PPROBE=pprobe.flags.cli:main",
+        ]
+    },
     packages=find_packages(exclude=["pprobe/tests"]),
     include_package_data=True,
     package_data={"": ["*.pth"]},  # 将所有.pth文件包含在安装中
