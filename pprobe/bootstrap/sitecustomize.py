@@ -19,7 +19,7 @@ def check_and_run_hook():
     else:
         # Print the warning message only once
         if not getattr(check_and_run_hook, 'warning_printed', False):
-            print("[PPROBE] Please set the environment variable PPROBE_ENABLE=1/2/3/4 to use pprobe.")
+            # print("[PPROBE] Please set the environment variable PPROBE_ENABLE=1/2/3/4 to use pprobe.")
             setattr(check_and_run_hook, 'warning_printed', True)
 
 # Call the function to check and run the hook
