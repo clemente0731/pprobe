@@ -43,7 +43,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "PPROBE=pprobe.flags.cli:main",
+            "PPROBE=pprobe.toggle.cli:main",
         ]
     },
     packages=find_packages(exclude=["pprobe/tests"]),
