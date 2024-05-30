@@ -28,29 +28,59 @@ HELLO_PPROBE = """
 
 
 # TODO
-class ToggleManager:
+class ToggleManager():
     def __init__(self):
         self.running_toggle = collections.OrderedDict()
         self.default_toggle = collections.OrderedDict()
         self.running_toggle_path = self.get_path("hook.toggle.running")
         self.default_toggle_path = self.get_path("hook.toggle.default")
+        self._init_toggles()
+        print(self.default_toggle)
+        print("===================")
+        print(self.running_toggle)
 
     def get_path(self, toggle_filename):
         with importlib.resources.path("pprobe.toggle", "__init__.py") as toggle_path:
             print("yyyyyyyy {}".format(Path(toggle_path.parent / toggle_filename)))
             return Path(toggle_path.parent / toggle_filename)
 
-    def get_toggle(self, name):
-        # Get the value of the flag with the specified name
-        # and convert it to the corresponding boolean value 
-        #  if the value is the string "true" or "false" (case-insensitive)
-        value = self.running_toggle.get(name, False)
-        if isinstance(value, str):
-            if value.lower() == "true":
-                return True
-            elif value.lower() == "false":
-                return False
-        return value
+    def _init_toggles(self):
+        self._load_toggles_from_file(self.default_toggle_path, self.default_toggle)
+        self._load_toggles_from_file(self.running_toggle_path, self.running_toggle)
+
+    def _load_toggles_from_file(self, file_path, toggle_dict):
+        try:
+            with file_path.open() as file:
+                lines = file.readlines()
+                toggle_dict.update(self._parse_toggles(lines))
+        except FileNotFoundError:
+            print(f"File not found: {file_path}")
+        except Exception as e:
+            print(f"Error reading {file_path}: {e}")
+
+    def _parse_toggles(self, lines):
+        toggles = collections.OrderedDict()
+
+        for line in lines:
+            # Skip lines without '=' or with '#' indicating comments
+            if "=" not in line or "#" in line:
+                continue
+
+            # Split the line at the "=" character and strip spaces
+            parts = line.strip().split("=")
+
+            # Ensure that the line was split into exactly two parts (name and value)
+            if len(parts) == 2:
+                name, value = parts[0].strip(), parts[1].strip()
+                # Convert "true" to True and "false" to False
+                if value.lower() == "true":
+                    toggles[name] = True
+                elif value.lower() == "false":
+                    toggles[name] = False
+                else:
+                    toggles[name] = value  # Keep as string if not "true" or "false"
+
+        return toggles
 
     def set_toggle(self, name, value):
         # Check if the given name exists in the running toggles dictionary
@@ -64,10 +94,28 @@ class ToggleManager:
             )
 
     # TODO
-    def reset_toggle(self, name, value):
-        pass
+    def update_toggle(self):
+        self._save_toggles_to_file(self.running_toggle_path, self.running_toggle)
+        self.show_status()
 
-    
+    # TODO
+    def reset_toggle(self):
+        self.running_toggle = collections.OrderedDict()
+        self.running_toggle.update(self.default_toggle)
+        self._save_toggles_to_file(self.running_toggle_path, self.running_toggle)
+        self.show_status()
+
+
+    def _save_toggles_to_file(self, file_path, toggle_dict):
+        try:
+            with file_path.open('w') as file:
+                for name, value in toggle_dict.items():
+                    value_str = "true" if value is True else "false" if value is False else value
+                    file.write(f"{name}={value_str}\n")
+        except Exception as e:
+            print(f"Error writing to {file_path}: {e}")
+
+
     # TODO
     def show_status(self):
         """
@@ -75,6 +123,9 @@ class ToggleManager:
             True values in green
             False values in red
         """
+        
+        print(HELLO_PPROBE)
+    
         status_in_color = []
 
         for entry in flag_data:
@@ -116,7 +167,27 @@ def main():
     args = parser.parse_args()
 
 
-    print(HELLO_PPROBE)
+    toggle_instance = ToggleManager()
+
+    if args.enable:
+        enable_options = args.enable.split(",")
+        for option in enable_options:
+            toggle_instance.set_toggle(option, "True")
+
+    if args.disable:
+        disable_options = args.disable.split(",")
+        for option in disable_options:
+            toggle_instance.set_toggle(option, "False")
+
+    if args.reset:
+        toggle_instance.reset_toggle()
+
+    if args.enable or args.disable:
+        toggle_instance.update_toggle()
+
+    if args.list:
+        toggle_instance.show_status()
+
 
 if __name__ == "__main__":
     main()

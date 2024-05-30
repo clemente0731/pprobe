@@ -287,7 +287,6 @@ def main_worker(gpu, ngpus_per_node, args):
         momentum=args.momentum,
         weight_decay=args.weight_decay,
     )
-
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
     scheduler = StepLR(optimizer, step_size=30, gamma=0.1)
 
@@ -467,7 +466,7 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
         if i % args.print_freq == 0:
             progress.display(i + 1)
 
-        if i >= 1:
+        if i >= 2:
             print(f"MODEL TRAIN FINISH {args.arch}: time duration:{time.time()-ST}")
             import sys
             sys.exit(0)
