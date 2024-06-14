@@ -28,11 +28,11 @@ HELLO_PPROBE = """
 """
 
 
-@dataclass
-class ToggleStatus:
-    name: str
-    status: str
-    default_status: str
+# @dataclass
+# class ToggleStatus:
+#     name: str
+#     status: str
+#     default_status: str
 
 
 class ToggleManager():
@@ -42,9 +42,6 @@ class ToggleManager():
         self.default_toggle_path = self.get_path("hook.toggle.default")
         self.running_toggle_path = self.get_path("hook.toggle.running")
         self._init_toggles()
-        print(self.default_toggle)
-        print("===================")
-        print(self.running_toggle)
 
     def get_path(self, toggle_filename):
         with importlib.resources.path("pprobe.toggle", "__init__.py") as toggle_path:
@@ -122,7 +119,6 @@ class ToggleManager():
             print(f"Error writing to {file_path}: {e}")
 
 
-    # TODO
     def show_status(self):
         """
         when printing:
@@ -131,33 +127,22 @@ class ToggleManager():
         """
         
         print(HELLO_PPROBE)
-    
+        
+        def colorize(value):
+            """Return the value in green if True, in red if False."""
+            if value in (True, "True"):
+                return f"\033[92m{value}\033[0m"  # 绿色
+            elif value in (False, "False"):
+                return f"\033[91m{value}\033[0m"  # 红色
+            return value
+        
         status_in_color = []
 
         for name, value in self.running_toggle.items():
+            status = colorize(value)
             default_value = self.default_toggle.get(name, "False")
-            status = ToggleStatus(name, value, default_value)
-            status_in_color.append(status)
-
-
-        # for entry in flag_data:
-        #     status = entry.value
-        #     if entry.value == "True":
-        #         # True显示为绿色
-        #         status = f"\033[92m{entry.value}\033[0m"  # 绿色
-        #     elif entry.value == "False":
-        #         # False显示为红色
-        #         status = f"\033[91m{entry.value}\033[0m"  # 红色
-
-        #     default_status = entry.default_value
-        #     if entry.default_value == "True":
-        #         # True显示为绿色
-        #         default_status = f"\033[92m{entry.default_value}\033[0m"  # 绿色
-        #     elif entry.default_value == "False":
-        #         # False显示为红色
-        #         default_status = f"\033[91m{entry.default_value}\033[0m"  # 红色
-
-        #     status_in_color.append((entry.name, status, default_status))
+            default_status = colorize(default_value)
+            status_in_color.append((name, status, default_status))
 
         table = tabulate(
             status_in_color,
@@ -165,6 +150,7 @@ class ToggleManager():
             tablefmt="pretty",
         )
         print(f"\n{table}\n")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Enable and Disable Options")
