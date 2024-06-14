@@ -36,10 +36,10 @@ class build_py_with_pth_file(build_py):
     def copy_toggle(self):
         src_file = 'pprobe/toggle/hook.toggle.default'
         dst_file = 'pprobe/toggle/hook.toggle.running'
-        if os.path.exists(src_file):
-            shutil.copy2(src_file, dst_file)
+        try:
+            shutil.copyfile(src_file, dst_file)
             print(f"Copied {src_file} to {dst_file}")
-        else:
+        except FileNotFoundError:
             print(f"Source file {src_file} does not exist")
 
 setup(

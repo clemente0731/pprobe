@@ -6,14 +6,15 @@
 """
 
 import argparse
-import importlib
-import importlib.resources
+import collections
 import os
 import pkgutil
 from pathlib import Path
 
+import importlib
+import importlib.resources
 from .tabulate import tabulate
-import collections
+from dataclasses import dataclass
 
 HELLO_PPROBE = """
 =================================================
@@ -27,13 +28,19 @@ HELLO_PPROBE = """
 """
 
 
-# TODO
+@dataclass
+class ToggleStatus:
+    name: str
+    status: str
+    default_status: str
+
+
 class ToggleManager():
     def __init__(self):
-        self.running_toggle = collections.OrderedDict()
         self.default_toggle = collections.OrderedDict()
-        self.running_toggle_path = self.get_path("hook.toggle.running")
+        self.running_toggle = collections.OrderedDict()
         self.default_toggle_path = self.get_path("hook.toggle.default")
+        self.running_toggle_path = self.get_path("hook.toggle.running")
         self._init_toggles()
         print(self.default_toggle)
         print("===================")
@@ -41,7 +48,6 @@ class ToggleManager():
 
     def get_path(self, toggle_filename):
         with importlib.resources.path("pprobe.toggle", "__init__.py") as toggle_path:
-            print("yyyyyyyy {}".format(Path(toggle_path.parent / toggle_filename)))
             return Path(toggle_path.parent / toggle_filename)
 
     def _init_toggles(self):
@@ -128,31 +134,37 @@ class ToggleManager():
     
         status_in_color = []
 
-        for entry in flag_data:
-            status = entry.value
-            if entry.value == "True":
-                # True显示为绿色
-                status = f"\033[92m{entry.value}\033[0m"  # 绿色
-            elif entry.value == "False":
-                # False显示为红色
-                status = f"\033[91m{entry.value}\033[0m"  # 红色
+        for name, value in self.running_toggle.items():
+            default_value = self.default_toggle.get(name, "False")
+            status = ToggleStatus(name, value, default_value)
+            status_in_color.append(status)
 
-            default_status = entry.default_value
-            if entry.default_value == "True":
-                # True显示为绿色
-                default_status = f"\033[92m{entry.default_value}\033[0m"  # 绿色
-            elif entry.default_value == "False":
-                # False显示为红色
-                default_status = f"\033[91m{entry.default_value}\033[0m"  # 红色
 
-            status_in_color.append((entry.name, status, default_status))
+        # for entry in flag_data:
+        #     status = entry.value
+        #     if entry.value == "True":
+        #         # True显示为绿色
+        #         status = f"\033[92m{entry.value}\033[0m"  # 绿色
+        #     elif entry.value == "False":
+        #         # False显示为红色
+        #         status = f"\033[91m{entry.value}\033[0m"  # 红色
+
+        #     default_status = entry.default_value
+        #     if entry.default_value == "True":
+        #         # True显示为绿色
+        #         default_status = f"\033[92m{entry.default_value}\033[0m"  # 绿色
+        #     elif entry.default_value == "False":
+        #         # False显示为红色
+        #         default_status = f"\033[91m{entry.default_value}\033[0m"  # 红色
+
+        #     status_in_color.append((entry.name, status, default_status))
 
         table = tabulate(
             status_in_color,
-            headers=["XFLAG-NAMES", "STATUS", "DEFAULT"],
+            headers=["TOGGLE-NAMES", "STATUS", "DEFAULT"],
             tablefmt="pretty",
         )
-        print(f"{HELLO_PPROBE}\n\n{table}")
+        print(f"\n{table}\n")
 
 def main():
     parser = argparse.ArgumentParser(description="Enable and Disable Options")
