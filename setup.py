@@ -23,10 +23,24 @@ class build_py_with_pth_file(build_py):
     """Include the .pth file for this project, in the generated wheel."""
     def run(self):
         super().run()
+
+        self.copy_pth()
+        self.copy_toggle()
+
+    def copy_pth(self):
         destination_in_wheel = "pprobe.pth"
         location_in_source_tree = "pprobe.pth"
         outfile = os.path.join(self.build_lib, destination_in_wheel)
         self.copy_file(location_in_source_tree, outfile, preserve_mode=0)
+
+    def copy_toggle(self):
+        src_file = 'pprobe/toggle/hook.toggle.default'
+        dst_file = 'pprobe/toggle/hook.toggle.running'
+        if os.path.exists(src_file):
+            shutil.copy2(src_file, dst_file)
+            print(f"Copied {src_file} to {dst_file}")
+        else:
+            print(f"Source file {src_file} does not exist")
 
 setup(
     name="pprobe",
