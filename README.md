@@ -1,4 +1,6 @@
-当然，以下是格式化为 Markdown 的整个文档：
+# pprobe: Python Hook Tool
+
+Welcome to the pprobe repository, a powerful Python hook tool designed to enhance your development and debugging experience. This tool provides a variety of features that can help you trace function calls, manage device conversions, and much more. Below is an overview of the project, its installation process, usage, and contribution guidelines.
 
 ```markdown
 # pprobe: Python Hook Tool
@@ -52,25 +54,25 @@ pprobe comes with a command-line interface that allows you to enable, disable, l
 **List current status:**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --list
+PPROBE --list
 ```
 
 **Enable specific options:**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --enable option1,option2
+PPROBE --enable option1,option2
 ```
 
 **Disable specific options:**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --disable option1,option2
+PPROBE --disable option1,option2
 ```
 
 **Reset options to default:**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --reset
+PPROBE --reset
 ```
 
 ### PyTorch Specific Hooks
@@ -165,25 +167,25 @@ pprobe 配备了命令行界面，允许您启用、禁用、列出和重置选�
 **列出当前状态：**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --list
+PPROBE --list
 ```
 
 **启用特定选项：**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --enable option1,option2
+PPROBE --enable option1,option2
 ```
 
 **禁用特定选项：**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --disable option1,option2
+PPROBE --disable option1,option2
 ```
 
 **重置选项为默认：**
 
 ```sh
-PPROBE_ENABLE=1 python -m pprobe.cli --reset
+PPROBE --reset
 ```
 
 ### PyTorch 特定钩子
