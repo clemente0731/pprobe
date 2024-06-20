@@ -64,6 +64,7 @@ def func_torch_distributed_wrapper(func):
                 Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__}")
             else:
                 Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__}")
+            trace_function_call()
             return result
         else:
             # handle the case where func is not callable
