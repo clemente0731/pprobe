@@ -1,7 +1,7 @@
 import time
 import functools
 import traceback
-from .logging import Logger
+from pprobe.utils.logging import Logger
 
 func_counts = 0
 

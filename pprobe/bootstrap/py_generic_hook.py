@@ -1,6 +1,6 @@
 import importlib
 import sys
-from .logging import Logger
+from pprobe.utils.logging import Logger
 from .pt_specific_hook import torch_hook_fn
 
 _hook_modules = {'torch'}
@@ -26,8 +26,10 @@ class MetaPathLoader:
         # 从而出现递归调用的问题
         finder = sys.meta_path.pop(0)
         module = importlib.import_module(fullname)
+
         Logger.info(f"META-PATH-LOADER --> MODULE {module}")
         torch_hook_fn(fullname, module)
+        
         sys.meta_path.insert(0, finder)
 
         return module
