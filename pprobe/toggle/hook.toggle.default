@@ -1,6 +1,7 @@
 ##################
 ## CONTROL  
 ##################
+REPRODUCE=True
 CATCH_STEP=False
 CATCH_LOSS=False
 
@@ -20,6 +21,6 @@ TEST_DUMP_MODULE=False
 TEST_DUMP_DIST=False
 
 ##################
-## REPRODUCE
+## SCAN
 ##################
-REPRODUCE=False
+PERF_ISSUE=False
