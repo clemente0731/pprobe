@@ -50,7 +50,37 @@ pprobe 配备了命令行界面，允许您启用、禁用、列出和重置选�
 **列出当前状态：**
 
 ```sh
+## PPROBE CLI
+```
 PPROBE --list
+=================================================
+██████╗ ██████╗ ██████╗  ██████╗ ██████╗ ███████╗
+██╔══██╗██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔════╝
+██████╔╝██████╔╝██████╔╝██║   ██║██████╔╝█████╗  
+██╔═══╝ ██╔═══╝ ██╔══██╗██║   ██║██╔══██╗██╔══╝  
+██║     ██║     ██║  ██║╚██████╔╝██████╔╝███████╗
+╚═╝     ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝                                                                                                                                  
+=================================================
+
+
++------------------+--------+---------+
+| TOGGLE-NAMES     | STATUS | DEFAULT |
++------------------+--------+---------+
+| REPRODUCE        |  True  |  True   |
+| CATCH_STEP       | False  |  False  |
+| CATCH_LOSS       | False  |  False  |
+| CATCH_LR         | False  |  False  |
+| DUMP_OP          | False  |  False  |
+| DUMP_MODULE      | False  |  False  |
+| DUMP_DIST        | False  |  False  |
+| DUMP_MEMORY      | False  |  False  |
+| TEST_DUMP_OP     | False  |  False  |
+| TEST_DUMP_MODULE | False  |  False  |
+| TEST_DUMP_DIST   | False  |  False  |
+| PERF_ISSUE       | False  |  False  |
+| TRACE_FILE       | False  |  False  |
++------------------+--------+---------+
+```
 ```
 
 **启用特定选项：**
