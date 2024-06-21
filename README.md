@@ -105,7 +105,6 @@ tox
 ## PPROBE CLI
 ```
 PPROBE --list
-
 =================================================
 ██████╗ ██████╗ ██████╗  ██████╗ ██████╗ ███████╗
 ██╔══██╗██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔════╝
@@ -119,15 +118,19 @@ PPROBE --list
 +------------------+--------+---------+
 | TOGGLE-NAMES     | STATUS | DEFAULT |
 +------------------+--------+---------+
+| REPRODUCE        |  True  |  True   |
 | CATCH_STEP       | False  |  False  |
 | CATCH_LOSS       | False  |  False  |
+| CATCH_LR         | False  |  False  |
 | DUMP_OP          | False  |  False  |
 | DUMP_MODULE      | False  |  False  |
 | DUMP_DIST        | False  |  False  |
-| DUMP_ALL         | False  |  False  |
+| DUMP_MEMORY      | False  |  False  |
 | TEST_DUMP_OP     | False  |  False  |
 | TEST_DUMP_MODULE | False  |  False  |
 | TEST_DUMP_DIST   | False  |  False  |
+| PERF_ISSUE       | False  |  False  |
+| TRACE_FILE       | False  |  False  |
 +------------------+--------+---------+
 ```
 

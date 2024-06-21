@@ -4,6 +4,7 @@
 REPRODUCE=True
 CATCH_STEP=False
 CATCH_LOSS=False
+CATCH_LR=False
 
 ##################
 ## SNAPSHOT
@@ -24,3 +25,4 @@ TEST_DUMP_DIST=False
 ## SCAN
 ##################
 PERF_ISSUE=False
+TRACE_FILE=False
