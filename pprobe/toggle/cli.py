@@ -96,12 +96,10 @@ class ToggleManager():
                 f"ERROR: toggle '{name}' does not exist in default, please check your spelling ~ "
             )
 
-    # TODO
     def update_toggle(self):
         self._save_toggles_to_file(self.running_toggle_path, self.running_toggle)
         self.show_status()
 
-    # TODO
     def reset_toggle(self):
         self.running_toggle = collections.OrderedDict()
         self.running_toggle.update(self.default_toggle)
@@ -131,9 +129,9 @@ class ToggleManager():
         def colorize(value):
             """Return the value in green if True, in red if False."""
             if value in (True, "True"):
-                return f"\033[92m{value}\033[0m"  # 绿色
+                return f"\033[92m{value}\033[0m"  # GREEN
             elif value in (False, "False"):
-                return f"\033[91m{value}\033[0m"  # 红色
+                return f"\033[91m{value}\033[0m"  # RED
             return value
         
         status_in_color = []
@@ -148,6 +146,7 @@ class ToggleManager():
             status_in_color,
             headers=["TOGGLE-NAMES", "STATUS", "DEFAULT"],
             tablefmt="pretty",
+            colalign=("left", "center", "center"),
         )
         print(f"\n{table}\n")
 

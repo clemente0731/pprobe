@@ -102,6 +102,35 @@ To run tests, use tox:
 tox
 ```
 
+## PPROBE CLI
+```
+PPROBE --list
+
+=================================================
+██████╗ ██████╗ ██████╗  ██████╗ ██████╗ ███████╗
+██╔══██╗██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔════╝
+██████╔╝██████╔╝██████╔╝██║   ██║██████╔╝█████╗  
+██╔═══╝ ██╔═══╝ ██╔══██╗██║   ██║██╔══██╗██╔══╝  
+██║     ██║     ██║  ██║╚██████╔╝██████╔╝███████╗
+╚═╝     ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝                                                                                                                                  
+=================================================
+
+
++------------------+--------+---------+
+| TOGGLE-NAMES     | STATUS | DEFAULT |
++------------------+--------+---------+
+| CATCH_STEP       | False  |  False  |
+| CATCH_LOSS       | False  |  False  |
+| DUMP_OP          | False  |  False  |
+| DUMP_MODULE      | False  |  False  |
+| DUMP_DIST        | False  |  False  |
+| DUMP_ALL         | False  |  False  |
+| TEST_DUMP_OP     | False  |  False  |
+| TEST_DUMP_MODULE | False  |  False  |
+| TEST_DUMP_DIST   | False  |  False  |
++------------------+--------+---------+
+```
+
 ## License
 
 pprobe is released under the MIT License.

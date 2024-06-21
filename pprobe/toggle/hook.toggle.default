@@ -1,9 +1,25 @@
+##################
+## CONTROL  
+##################
 CATCH_STEP=False
 CATCH_LOSS=False
+
+##################
+## SNAPSHOT
+##################
 DUMP_OP=False
-DUMP_MODULE_=False
+DUMP_MODULE=False
 DUMP_DIST=False
-DUMP_ALL=False
+DUMP_MEMORY=False
+
+##################
+## TESTCASE DUMP  
+##################
 TEST_DUMP_OP=False
 TEST_DUMP_MODULE=False
 TEST_DUMP_DIST=False
+
+##################
+## REPRODUCE
+##################
+REPRODUCE=False
