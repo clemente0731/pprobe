@@ -63,24 +63,26 @@ PPROBE --list
 =================================================
 
 
-+------------------+--------+---------+
-| TOGGLE-NAMES     | STATUS | DEFAULT |
-+------------------+--------+---------+
-| REPRODUCE        |  True  |  True   |
-| CATCH_STEP       | False  |  False  |
-| CATCH_LOSS       | False  |  False  |
-| CATCH_LR         | False  |  False  |
-| DUMP_OP          | False  |  False  |
-| DUMP_MODULE      | False  |  False  |
-| DUMP_DIST        | False  |  False  |
-| DUMP_MEMORY      | False  |  False  |
-| TEST_DUMP_OP     | False  |  False  |
-| TEST_DUMP_MODULE | False  |  False  |
-| TEST_DUMP_DIST   | False  |  False  |
-| PERF_ISSUE       | False  |  False  |
-| TRACE_FILE       | False  |  False  |
-+------------------+--------+---------+
-```
++------------------------+--------+---------+
+| TOGGLE-NAMES           | STATUS | DEFAULT |
++------------------------+--------+---------+
+| PPROBE_ENABLE          |  True  |  False  |
+| TORCH_REPRODUCE        |  True  |  True   |
+| TORCH_CATCH_STEP       | False  |  False  |
+| TORCH_CATCH_LOSS       | False  |  False  |
+| TORCH_CATCH_LR         | False  |  False  |
+| TORCH_DUMP_OP          |  True  |  False  |
+| TORCH_DUMP_MODULE      | False  |  False  |
+| TORCH_DUMP_DIST        | False  |  False  |
+| TORCH_DUMP_MEMORY      | False  |  False  |
+| TORCH_TEST_DUMP_OP     | False  |  False  |
+| TORCH_TEST_DUMP_MODULE | False  |  False  |
+| TORCH_TEST_DUMP_DIST   | False  |  False  |
+| TORCH_PERF_ISSUE       | False  |  False  |
+| TORCH_TRACE_FILE       | False  |  False  |
++------------------------+--------+---------+
+
+
 ```
 
 **启用特定选项：**

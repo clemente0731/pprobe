@@ -8,14 +8,9 @@ def check_and_run_hook():
     # Check if PPROBE is enabled by checking the environment variable
     pprobe_enabled = int(os.environ.get("PPROBE_ENABLE", 0))
 
-    if pprobe_enabled and pprobe_enabled == 1:
+    if pprobe_enabled:
         # generic hook
-        from pprobe.bootstrap import py_generic_hook
-    elif pprobe_enabled and pprobe_enabled == 2:
-        # torch func hook
-        from pprobe.bootstrap import pt_generic_hook
-        context=pt_generic_hook.TorchFunctionContext()
-        context.__enter__()
+        from pprobe.bootstrap import hook_setup
     else:
         # Print the warning message only once
         if not getattr(check_and_run_hook, 'warning_printed', False):
