@@ -85,6 +85,12 @@ class ToggleManager():
 
         return toggles
 
+    def get_toggles(self):
+        return self.running_toggle
+
+    def get_toggle(self, name):
+        return self.running_toggle.get(name)
+
     def set_toggle(self, name, value):
         # Check if the given name exists in the running toggles dictionary
         if name in self.running_toggle:
