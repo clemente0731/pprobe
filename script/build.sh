@@ -10,6 +10,22 @@ cd "${project_dir}"
 # 清理项目目录
 # git clean -dxf
 
+
+
+# Install black globally if not already installed
+if ! command -v black &> /dev/null
+then
+    echo "Installing black..."
+    pip install black || true
+else
+    echo "Black is already installed."
+fi
+
+# Format all Python files in the project using black
+echo "Formatting Python files with black..."
+black . || true
+
+
 # 构建 wheel 包
 python setup.py bdist_wheel
 

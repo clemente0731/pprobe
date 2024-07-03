@@ -17,10 +17,11 @@ class Color:
     END = "\033[0m"
 
 
-class Logger():
+class Logger:
     """
     implementation of Logger
     """
+
     @staticmethod
     def print_c(msg, color: Color):
         print(color + msg + Color.END)

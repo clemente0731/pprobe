@@ -1,5 +1,6 @@
 import os
 
+
 def check_and_run_hook():
     """
     Check the environment variable. If PPROBE is enabled, then execute the _hook function;
@@ -13,9 +14,10 @@ def check_and_run_hook():
         from pprobe.bootstrap import hook_setup
     else:
         # Print the warning message only once
-        if not getattr(check_and_run_hook, 'warning_printed', False):
+        if not getattr(check_and_run_hook, "warning_printed", False):
             # print("[PPROBE] Please set the environment variable PPROBE_ENABLE=1/2/3/4 to use pprobe.")
-            setattr(check_and_run_hook, 'warning_printed', True)
+            setattr(check_and_run_hook, "warning_printed", True)
+
 
 # Call the function to check and run the hook
 check_and_run_hook()

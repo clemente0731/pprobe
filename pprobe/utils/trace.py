@@ -1,5 +1,5 @@
-
 import traceback
+
 
 def trace_function_call():
     """
@@ -17,4 +17,6 @@ def trace_function_call():
         stack_trace = traceback.extract_stack()
         # Print the stack trace information
         for stack_entry in stack_trace[:-2]:
-            Logger.warn(f"\t\t Trace File: {stack_entry.filename}, Line: {stack_entry.lineno}")
+            Logger.warn(
+                f"\t\t Trace File: {stack_entry.filename}, Line: {stack_entry.lineno}"
+            )

@@ -4,9 +4,10 @@ from pprobe.utils.logging import Logger
 
 func_counts = 0
 
+
 def func_torch_step_count_wrapper(func):
     ###################################################
-    # torch.autograd.backward / torch.Tensor.backward 
+    # torch.autograd.backward / torch.Tensor.backward
     ###################################################
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -22,4 +23,5 @@ def func_torch_step_count_wrapper(func):
         else:
             # handle the case where func is not callable
             Logger.warn(f"func:{func} is not callable")
+
     return wrapper
