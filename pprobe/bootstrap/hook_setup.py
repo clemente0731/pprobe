@@ -4,7 +4,6 @@ from pprobe.utils.logging import Logger
 from pprobe.toggle.cli import ToggleManager
 
 from pprobe.bootstrap.hooks.pytorch_catch import func_torch_step_count_wrapper
-from pprobe.bootstrap.hooks.pytorch_dist import func_torch_distributed_wrapper
 from pprobe.bootstrap.hooks.pytorch_perf import func_torch_device_conversion_wrapper
 
 
@@ -15,20 +14,49 @@ class PProbeSetup:
     def __init__(self, module, module_fullname):
         self.module = module
         self.pprobe_toggle = ToggleManager()
+        ####################
+        ### ENABLE FIELD
+        ####################
         self.pprobe_enabled = self.pprobe_toggle.get_toggle("PPROBE_ENABLE")
+        self.torch_reproduce_enabled = self.pprobe_toggle.get_toggle("TORCH_REPRODUCE")
+
         self.torch_catch_step_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_CATCH_STEP"
         )
-        self.torch_reproduce_enabled = self.pprobe_toggle.get_toggle("TORCH_REPRODUCE")
+        self.torch_catch_loss_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_CATCH_LOSS"
+        )
+        self.torch_catch_lr_enabled = self.pprobe_toggle.get_toggle("TORCH_CATCH_LR")
+
         self.torch_dump_op_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_OP")
         self.torch_dump_dist_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_DIST")
         self.torch_dump_module_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_DUMP_MODULE"
         )
+        self.torch_dump_optim_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_DUMP_OPTIM"
+        )
+        self.torch_dump_memory_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_DUMP_MEMORY"
+        )
+        self.torch_test_dump_op_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_TEST_DUMP_OP"
+        )
+        self.torch_test_dump_dist_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_TEST_DUMP_DIST"
+        )
+        self.torch_test_dump_module_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_TEST_DUMP_MODULE"
+        )
         self.torch_perf_issue_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_PERF_ISSUE"
         )
-
+        self.torch_torch_trace_file_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_TRACE_FILE"
+        )
+        ####################
+        ### INIT HOOK
+        ####################
         self.check_and_run_hook(module_fullname)
 
     def check_and_run_hook(self, module_fullname):
@@ -36,17 +64,44 @@ class PProbeSetup:
             self.run_generic_hook()
             # torch part
             if module_fullname == "torch":
+                if self.torch_reproduce_enabled:
+                    # TODO
+                    pass
                 if self.torch_catch_step_enabled:
                     self.run_torch_catch_step_hook()
-                if self.torch_reproduce_enabled:
-                    self.run_torch_reproduce_hook()
+                if self.torch_catch_loss_enabled:
+                    # TODO
+                    pass
+                if self.torch_catch_lr_enabled:
+                    # TODO
+                    pass
                 if self.torch_dump_op_enabled:
                     self.run_torch_func_hook()
+                if self.torch_dump_dist_enabled:
+                    # TODO
+                    pass
                 if self.torch_dump_module_enabled:
                     self.run_torch_module_hook()
-                if self.torch_dump_dist_enabled:
-                    self.run_torch_func_hook()
+                if self.torch_dump_optim_enabled:
+                    # TODO
+                    pass
+                if self.torch_dump_memory_enabled:
+                    # TODO
+                    pass
+                if self.torch_test_dump_op_enabled:
+                    # TODO
+                    pass
+                if self.torch_test_dump_dist_enabled:
+                    # TODO
+                    pass
+                if self.torch_test_dump_module_enabled:
+                    # TODO
+                    pass
                 if self.torch_perf_issue_enabled:
+                    # TODO
+                    pass
+                if self.torch_torch_trace_file_enabled:
+                    # TODO
                     pass
         else:
             self.print_warning()
@@ -60,18 +115,21 @@ class PProbeSetup:
     def run_torch_func_hook(self):
         from pprobe.bootstrap.hooks import pytorch_func_op
 
+        Logger.info(f"[PPROBE] torch function hook executed")
         context = pytorch_func_op.TorchFunctionContext()
         context.__enter__()
-        Logger.info(f"[PPROBE] torch function hook executed")
 
     def run_torch_module_hook(self):
         from pprobe.bootstrap.hooks import pytorch_module
 
-        context = pytorch_module.TorchModuleContext()
-        context.__enter__()
         Logger.info(f"[PPROBE] torch module hook executed")
 
+        context = pytorch_module.TorchModuleContext()
+        context.__enter__()
+
     def run_torch_dist_hook(self):
+        from pprobe.bootstrap.hooks.pytorch_dist import func_torch_distributed_wrapper
+
         Logger.info(f"[PPROBE] torch dist hook executed")
 
         ###################################################
