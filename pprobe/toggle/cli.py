@@ -20,13 +20,28 @@ HELLO_PPROBE = """
 =================================================
 ██████╗ ██████╗ ██████╗  ██████╗ ██████╗ ███████╗
 ██╔══██╗██╔══██╗██╔══██╗██╔═══██╗██╔══██╗██╔════╝
-██████╔╝██████╔╝██████╔╝██║   ██║██████╔╝█████╗  
-██╔═══╝ ██╔═══╝ ██╔══██╗██║   ██║██╔══██╗██╔══╝  
+██████╔╝██████╔╝██████╔╝██║   ██║██████╔╝█████╗
+██╔═══╝ ██╔═══╝ ██╔══██╗██║   ██║██╔══██╗██╔══╝
 ██║     ██║     ██║  ██║╚██████╔╝██████╔╝███████╗
-╚═╝     ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝                                                                                                                                  
+╚═╝     ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝
 =================================================
 MIT License
-Copyright (c) [2024] [clemente0620@gmail.com]
+
+Copyright (c) 2024 clemente0620@gmail.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 """
 
 
@@ -131,9 +146,9 @@ class ToggleManager():
             True values in green
             False values in red
         """
-        
+
         print(HELLO_PPROBE)
-        
+
         def colorize(value):
             """Return the value in green if True, in red if False."""
             if value in (True, "True"):
@@ -141,7 +156,7 @@ class ToggleManager():
             elif value in (False, "False"):
                 return f"\033[91m{value}\033[0m"  # RED
             return value
-        
+
         status_in_color = []
 
         for name, value in self.running_toggle.items():
