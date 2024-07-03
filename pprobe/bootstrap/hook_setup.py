@@ -38,6 +38,7 @@ class PProbeSetup:
         ## TORCH-SNAPSHOT
         #########################
         self.torch_dump_op_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_OP")
+        self.torch_dump_aten_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_ATEN")
         self.torch_dump_dist_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_DIST")
         self.torch_dump_module_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_DUMP_MODULE"
@@ -104,6 +105,9 @@ class PProbeSetup:
                     # TODO
                     pass
                 if self.torch_test_dump_op_enabled:
+                    # TODO
+                    pass
+                if self.torch_test_dump_aten_enabled:
                     # TODO
                     pass
                 if self.torch_test_dump_dist_enabled:
@@ -229,7 +233,6 @@ class MetaPathFinder:
 class MetaPathLoader:
     def load_module(self, module_fullname):
         # Logger.info('load_module {}'.format(module_fullname))
-
         # sys.modules中保存的是已经导入过的 module
         if module_fullname in sys.modules:
             return sys.modules[module_fullname]
