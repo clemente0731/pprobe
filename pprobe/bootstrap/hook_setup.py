@@ -18,8 +18,11 @@ class PProbeSetup:
         ### ENABLE FIELD
         ####################
         self.pprobe_enabled = self.pprobe_toggle.get_toggle("PPROBE_ENABLE")
-        self.torch_reproduce_enabled = self.pprobe_toggle.get_toggle("TORCH_REPRODUCE")
 
+        #########################
+        ## TORCH-CONTROL
+        #########################
+        self.torch_reproduce_enabled = self.pprobe_toggle.get_toggle("TORCH_REPRODUCE")
         self.torch_catch_step_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_CATCH_STEP"
         )
@@ -27,7 +30,13 @@ class PProbeSetup:
             "TORCH_CATCH_LOSS"
         )
         self.torch_catch_lr_enabled = self.pprobe_toggle.get_toggle("TORCH_CATCH_LR")
+        self.torch_catch_memory_enabled = self.pprobe_toggle.get_toggle(
+            "TORCH_CATCH_MEMORY"
+        )
 
+        #########################
+        ## TORCH-SNAPSHOT
+        #########################
         self.torch_dump_op_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_OP")
         self.torch_dump_dist_enabled = self.pprobe_toggle.get_toggle("TORCH_DUMP_DIST")
         self.torch_dump_module_enabled = self.pprobe_toggle.get_toggle(
@@ -36,9 +45,10 @@ class PProbeSetup:
         self.torch_dump_optim_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_DUMP_OPTIM"
         )
-        self.torch_dump_memory_enabled = self.pprobe_toggle.get_toggle(
-            "TORCH_DUMP_MEMORY"
-        )
+
+        #########################
+        ## TORCH-TESTCASE DUMP
+        #########################
         self.torch_test_dump_op_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_TEST_DUMP_OP"
         )
@@ -48,12 +58,17 @@ class PProbeSetup:
         self.torch_test_dump_module_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_TEST_DUMP_MODULE"
         )
+
+        #########################
+        ## TORCH-SCAN
+        #########################
         self.torch_perf_issue_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_PERF_ISSUE"
         )
         self.torch_torch_trace_file_enabled = self.pprobe_toggle.get_toggle(
             "TORCH_TRACE_FILE"
         )
+
         ####################
         ### INIT HOOK
         ####################
