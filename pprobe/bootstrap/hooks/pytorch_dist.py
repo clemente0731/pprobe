@@ -2,6 +2,7 @@ import time
 import functools
 from pprobe.utils.logging import Logger
 
+
 def func_torch_distributed_wrapper(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -16,4 +17,5 @@ def func_torch_distributed_wrapper(func):
         else:
             # handle the case where func is not callable
             Logger.warn(f"[PPROBE] func:{func} is not callable")
+
     return wrapper

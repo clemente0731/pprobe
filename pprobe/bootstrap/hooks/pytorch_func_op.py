@@ -29,6 +29,7 @@ class TorchFunctionContext(TorchFunctionMode):
 
     context.__exit__()
     """
+
     def __init__(self):
         super().__init__()
         self.func_idx = 0
@@ -147,7 +148,9 @@ class TorchFunctionContext(TorchFunctionMode):
 
         output = func(*args, **(kwargs or {}))
 
-        if resolve_name(func) and any(keyword in resolve_name(func) for keyword in ["dtype", "shape"]):
+        if resolve_name(func) and any(
+            keyword in resolve_name(func) for keyword in ["dtype", "shape"]
+        ):
             # If the function name includes "torch.Tensor.dtype" or "torch.Tensor.shape", return the output value directly without further processing
             return output
 
@@ -204,6 +207,7 @@ class TorchFunctionMiniContext(TorchFunctionMode):
 
     context.__exit__()
     """
+
     def __init__(self):
         super().__init__()
         self.func_idx = 0
@@ -243,7 +247,9 @@ class TorchFunctionMiniContext(TorchFunctionMode):
         # Check if it's multi-GPU multi-rank or single-GPU
         if self.is_multi_gpu_multi_rank():
             rank = dist.get_rank()
-            filename = f"{now.strftime('%Y%m%d%H%M')}_mini_function_rank_{rank}_dump.csv"
+            filename = (
+                f"{now.strftime('%Y%m%d%H%M')}_mini_function_rank_{rank}_dump.csv"
+            )
         else:
             filename = f"{now.strftime('%Y%m%d%H%M')}_mini_function_rank_0_dump.csv"
 
@@ -260,11 +266,12 @@ class TorchFunctionMiniContext(TorchFunctionMode):
 
         output = func(*args, **(kwargs or {}))
 
-
-        if resolve_name(func) and any(keyword in resolve_name(func) for keyword in ["dtype", "shape"]):
+        if resolve_name(func) and any(
+            keyword in resolve_name(func) for keyword in ["dtype", "shape"]
+        ):
             # If the function name includes "torch.Tensor.dtype" or "torch.Tensor.shape", return the output value directly without further processing
             return output
-    
+
         print(f"{resolve_name(func)}() ===== type(output) {type(output)}", flush=True)
 
         # 填充缺失值

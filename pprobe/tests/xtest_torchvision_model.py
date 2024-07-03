@@ -469,6 +469,7 @@ def train(train_loader, model, criterion, optimizer, epoch, device, args):
         if i >= 2:
             print(f"MODEL TRAIN FINISH {args.arch}: time duration:{time.time()-ST}")
             import sys
+
             sys.exit(0)
 
 

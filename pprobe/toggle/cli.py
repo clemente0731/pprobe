@@ -1,4 +1,3 @@
-
 # !/usr/bin/env python
 
 """
@@ -52,7 +51,7 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 #     default_status: str
 
 
-class ToggleManager():
+class ToggleManager:
     def __init__(self):
         self.default_toggle = collections.OrderedDict()
         self.running_toggle = collections.OrderedDict()
@@ -129,16 +128,20 @@ class ToggleManager():
         self._save_toggles_to_file(self.running_toggle_path, self.running_toggle)
         self.show_status()
 
-
     def _save_toggles_to_file(self, file_path, toggle_dict):
         try:
-            with file_path.open('w') as file:
+            with file_path.open("w") as file:
                 for name, value in toggle_dict.items():
-                    value_str = "true" if value is True else "false" if value is False else value
+                    value_str = (
+                        "true"
+                        if value is True
+                        else "false"
+                        if value is False
+                        else value
+                    )
                     file.write(f"{name}={value_str}\n")
         except Exception as e:
             print(f"Error writing to {file_path}: {e}")
-
 
     def show_status(self):
         """
@@ -185,7 +188,6 @@ def main():
     parser.add_argument("--list", action="store_true", help="List the current status")
     parser.add_argument("--reset", action="store_true", help="Reset the toggle")
     args = parser.parse_args()
-
 
     toggle_instance = ToggleManager()
 

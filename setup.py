@@ -19,8 +19,10 @@ def read_requirements(file_path):
         print("pprobe install_requires:", f.read().splitlines())
         return f.read().splitlines()
 
+
 class build_py_with_pth_file(build_py):
     """Include the .pth file for this project, in the generated wheel."""
+
     def run(self):
         super().run()
 
@@ -34,14 +36,15 @@ class build_py_with_pth_file(build_py):
         self.copy_file(location_in_source_tree, outfile, preserve_mode=0)
 
     def copy_toggle(self):
-        src_file = 'pprobe/toggle/hook.toggle.default'
-        dst_file = 'pprobe/toggle/hook.toggle.running'
+        src_file = "pprobe/toggle/hook.toggle.default"
+        dst_file = "pprobe/toggle/hook.toggle.running"
         dst_build_file = os.path.join(self.build_lib, dst_file)
         try:
             shutil.copyfile(src_file, dst_build_file)
             print(f"Copied {src_file} to {dst_build_file}")
         except FileNotFoundError:
             print(f"Source file {src_file} does not exist")
+
 
 setup(
     name="pprobe",
