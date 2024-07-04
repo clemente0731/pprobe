@@ -139,11 +139,11 @@ class PProbeSetup:
         context.__enter__()
 
     def run_torch_module_hook(self):
-        from pprobe.bootstrap.hooks import pytorch_module
+        from pprobe.bootstrap.hooks import _tmp_pytorch_module
 
         Logger.info(f"[PPROBE] torch module hook executed")
 
-        context = pytorch_module.TorchModuleContext()
+        context = _tmp_pytorch_module.TorchModuleContext()
         context.__enter__()
 
     def run_torch_dist_hook(self):
