@@ -93,6 +93,9 @@ class PProbeSetup:
                     pass
                 if self.torch_dump_op_enabled:
                     self.run_torch_func_hook()
+                if self.torch_dump_aten_enabled:
+                    # TODO
+                    pass
                 if self.torch_dump_dist_enabled:
                     # TODO
                     pass
@@ -101,13 +104,10 @@ class PProbeSetup:
                 if self.torch_dump_optim_enabled:
                     # TODO
                     pass
-                if self.torch_dump_memory_enabled:
+                if self.torch_catch_memory_enabled:
                     # TODO
                     pass
                 if self.torch_test_dump_op_enabled:
-                    # TODO
-                    pass
-                if self.torch_test_dump_aten_enabled:
                     # TODO
                     pass
                 if self.torch_test_dump_dist_enabled:
