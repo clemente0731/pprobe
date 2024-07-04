@@ -135,9 +135,7 @@ class ToggleManager:
                     value_str = (
                         "true"
                         if value is True
-                        else "false"
-                        if value is False
-                        else value
+                        else "false" if value is False else value
                     )
                     file.write(f"{name}={value_str}\n")
         except Exception as e:
