@@ -154,6 +154,32 @@ class PProbeSetup:
         ###################################################
         ## torch.distributed part
         ###################################################
+
+        # Distributed Operations in PyTorch
+
+        # 1. Communication Operations
+        # torch.distributed.all_gather: Gathers data from all processes into a list.
+        # torch.distributed.all_reduce: Reduces data from all processes and broadcasts the result back to all processes.
+        # torch.distributed.broadcast: Broadcasts data from the root process to all other processes.
+        # torch.distributed.gather: Gathers data from all processes to the root process.
+        # torch.distributed.reduce: Reduces data from all processes on the root process.
+        # torch.distributed.scatter: Scatters data from the root process to all processes.
+
+        # 2. Advanced Communication Operations
+        # torch.distributed.all_to_all: Performs all-to-all communication operations.
+        # torch.distributed.reduce_scatter: Scatters data from the root process to all processes and reduces it across all processes.
+        # torch.distributed.all_gather_object: Similar to all_gather, but for collecting objects.
+        # torch.distributed.broadcast_object_list: Similar to broadcast, but for broadcasting lists of objects.
+
+        # 3. Process Group Management and Initialization
+        # torch.distributed.init_process_group: Initializes a distributed process group, setting backend and other parameters.
+        # torch.distributed.destroy_process_group: Destroys the current distributed process group, releasing resources.
+        # torch.distributed.new_group: Creates a new distributed process group.
+
+        # 4. Other Common Operations and Tools
+        # torch.distributed.barrier: Performs a global synchronization operation where all processes wait until all processes reach the synchronization point before continuing.
+        # torch.distributed.monitored_barrier: Similar to barrier, but supports timeouts and error reporting, useful for debugging and synchronization.
+
         self.module.distributed.broadcast = func_torch_distributed_wrapper(
             self.module.distributed.broadcast
         )
