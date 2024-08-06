@@ -97,8 +97,7 @@ class PProbeSetup:
                     # TODO
                     pass
                 if self.torch_dump_dist_enabled:
-                    # TODO
-                    pass
+                    self.run_torch_dist_hook()
                 if self.torch_dump_module_enabled:
                     self.run_torch_module_hook()
                 if self.torch_dump_optim_enabled:
@@ -159,6 +158,7 @@ class PProbeSetup:
 
         # 1. Communication Operations
         # torch.distributed.all_gather: Gathers data from all processes into a list.
+
         # torch.distributed.all_reduce: Reduces data from all processes and broadcasts the result back to all processes.
         # torch.distributed.broadcast: Broadcasts data from the root process to all other processes.
         # torch.distributed.gather: Gathers data from all processes to the root process.
@@ -180,6 +180,9 @@ class PProbeSetup:
         # torch.distributed.barrier: Performs a global synchronization operation where all processes wait until all processes reach the synchronization point before continuing.
         # torch.distributed.monitored_barrier: Similar to barrier, but supports timeouts and error reporting, useful for debugging and synchronization.
 
+        self.module.distributed.all_gather = func_torch_distributed_wrapper(
+            self.module.distributed.all_gather
+        )
         self.module.distributed.broadcast = func_torch_distributed_wrapper(
             self.module.distributed.broadcast
         )
@@ -188,9 +191,6 @@ class PProbeSetup:
         )
         self.module.distributed.reduce = func_torch_distributed_wrapper(
             self.module.distributed.reduce
-        )
-        self.module.distributed.all_gather = func_torch_distributed_wrapper(
-            self.module.distributed.all_gather
         )
         self.module.distributed.gather = func_torch_distributed_wrapper(
             self.module.distributed.gather
