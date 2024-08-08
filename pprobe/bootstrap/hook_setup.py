@@ -7,6 +7,10 @@ from pprobe.bootstrap.hooks.pytorch_catch import (
     func_torch_step_count_wrapper,
     dataloader_next_method_wrapper,
 )
+from pprobe.bootstrap.hooks.pytorch_optim import (
+    lr_scheduler_step_method_wrapper,
+    optimizer_zero_grad_method_wrapper,
+)
 from pprobe.bootstrap.hooks.pytorch_perf import func_torch_device_conversion_wrapper
 
 
@@ -84,45 +88,34 @@ class PProbeSetup:
             # torch part
             if module_fullname == "torch":
                 if self.torch_reproduce_enabled:
-                    # TODO
                     pass
                 if self.torch_catch_step_enabled:
                     self.run_torch_catch_step_hook()
                 if self.torch_catch_loss_enabled:
-                    # TODO
                     pass
                 if self.torch_catch_lr_enabled:
-                    # TODO
-                    pass
+                    self.run_torch_catch_lr_hook()
                 if self.torch_dump_op_enabled:
                     self.run_torch_func_hook()
                 if self.torch_dump_aten_enabled:
-                    # TODO
                     pass
                 if self.torch_dump_dist_enabled:
                     self.run_torch_dist_hook()
                 if self.torch_dump_module_enabled:
                     self.run_torch_module_hook()
                 if self.torch_dump_optim_enabled:
-                    # TODO
                     pass
                 if self.torch_catch_memory_enabled:
-                    # TODO
                     pass
                 if self.torch_test_dump_op_enabled:
-                    # TODO
                     pass
                 if self.torch_test_dump_dist_enabled:
-                    # TODO
                     pass
                 if self.torch_test_dump_module_enabled:
-                    # TODO
                     pass
                 if self.torch_perf_issue_enabled:
-                    # TODO
                     pass
                 if self.torch_torch_trace_file_enabled:
-                    # TODO
                     pass
         else:
             self.print_warning()
@@ -244,6 +237,18 @@ class PProbeSetup:
             dataloader_next_method_wrapper(
                 self.module.utils.data.dataloader._BaseDataLoaderIter.__next__
             )
+        )
+
+    def run_torch_catch_lr_hook(self):
+        Logger.info(f"[PPROBE] torch catch lr hook executed")
+        self.module.optim.lr_scheduler.LRScheduler.step = (
+            lr_scheduler_step_method_wrapper(
+                self.module.optim.lr_scheduler.LRScheduler.step
+            )
+        )
+
+        self.module.optim.Optimizer.zero_grad = optimizer_zero_grad_method_wrapper(
+            self.module.optim.Optimizer.zero_grad
         )
 
     def run_torch_perf_hook(self):
