@@ -477,6 +477,7 @@ def validate(val_loader, model, criterion, args):
     def run_validate(loader, base_progress=0):
         with torch.no_grad():
             end = time.time()
+            ST = time.time()
             for i, (images, target) in enumerate(loader):
                 i = base_progress + i
                 if args.gpu is not None and torch.cuda.is_available():
@@ -503,6 +504,12 @@ def validate(val_loader, model, criterion, args):
 
                 if i % args.print_freq == 0:
                     progress.display(i + 1)
+
+                if i >= 2:
+                    print(f"MODEL EVAL FINISH {args.arch}: time duration:{time.time()-ST}")
+                    import sys
+
+                    sys.exit(0)
 
     batch_time = AverageMeter("Time", ":6.3f", Summary.NONE)
     losses = AverageMeter("Loss", ":.4e", Summary.NONE)
