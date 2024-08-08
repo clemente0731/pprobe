@@ -3,7 +3,10 @@ import sys
 from pprobe.utils.logging import Logger
 from pprobe.toggle.cli import ToggleManager
 
-from pprobe.bootstrap.hooks.pytorch_catch import func_torch_step_count_wrapper
+from pprobe.bootstrap.hooks.pytorch_catch import (
+    func_torch_step_count_wrapper,
+    dataloader_next_method_wrapper,
+)
 from pprobe.bootstrap.hooks.pytorch_perf import func_torch_device_conversion_wrapper
 
 
@@ -216,13 +219,31 @@ class PProbeSetup:
         Logger.info(f"[PPROBE] torch reproduce hook executed")
 
     def run_torch_catch_step_hook(self):
+
         ###################################################
         # torch.autograd.backward / torch.Tensor.backward
         ###################################################
-        # Add the logic for torch catch_step hook
+        # Add the logic for torch training catch_step hook
         Logger.info(f"[PPROBE] torch catch step hook executed")
         self.module.autograd.backward = func_torch_step_count_wrapper(
             self.module.autograd.backward
+        )
+
+        ###################################################
+        # torch.utils.data.dataloader._BaseDataLoaderIter
+        ###################################################
+
+        # from torch.utils.data.dataloader import _BaseDataLoaderIter
+        # # Save the original __next__ method
+        # original_dataloader_next = _BaseDataLoaderIter.__next__
+        # # Use the decorator to wrap the original method
+        # _BaseDataLoaderIter.__next__ = dataloader_next_method_wrapper(original_dataloader_next)
+
+        Logger.info(f"[PPROBE] torch catch dataloader hook executed")
+        self.module.utils.data.dataloader._BaseDataLoaderIter.__next__ = (
+            dataloader_next_method_wrapper(
+                self.module.utils.data.dataloader._BaseDataLoaderIter.__next__
+            )
         )
 
     def run_torch_perf_hook(self):
