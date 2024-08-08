@@ -241,12 +241,6 @@ class PProbeSetup:
 
     def run_torch_catch_lr_hook(self):
         Logger.info(f"[PPROBE] torch catch lr hook executed")
-        self.module.optim.lr_scheduler.LRScheduler.step = (
-            lr_scheduler_step_method_wrapper(
-                self.module.optim.lr_scheduler.LRScheduler.step
-            )
-        )
-
         self.module.optim.Optimizer.zero_grad = optimizer_zero_grad_method_wrapper(
             self.module.optim.Optimizer.zero_grad
         )
