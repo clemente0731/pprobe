@@ -7,10 +7,8 @@ from pprobe.bootstrap.hooks.pytorch_catch import (
     func_torch_step_count_wrapper,
     dataloader_next_method_wrapper,
 )
-from pprobe.bootstrap.hooks.pytorch_optim import (
-    lr_scheduler_step_method_wrapper,
-    optimizer_zero_grad_method_wrapper,
-)
+from pprobe.bootstrap.hooks.pytorch_optim import optimizer_zero_grad_method_wrapper
+
 from pprobe.bootstrap.hooks.pytorch_perf import func_torch_device_conversion_wrapper
 
 

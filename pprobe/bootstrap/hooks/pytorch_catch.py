@@ -35,7 +35,8 @@ def dataloader_next_method_wrapper(original_next: Callable) -> Callable:
     """
 
     def wrapper(self) -> Any:
-        Logger.info(f"[PPROBE] Iteration count ===>:{self._num_yielded}")
+        iter_count = self._num_yielded + 1
+        Logger.info(f"[PPROBE] Iteration count ===>:{iter_count}")
         return original_next(self)
 
     return wrapper
