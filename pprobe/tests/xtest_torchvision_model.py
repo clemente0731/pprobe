@@ -506,7 +506,9 @@ def validate(val_loader, model, criterion, args):
                     progress.display(i + 1)
 
                 if i >= 2:
-                    print(f"MODEL EVAL FINISH {args.arch}: time duration:{time.time()-ST}")
+                    print(
+                        f"MODEL EVAL FINISH {args.arch}: time duration:{time.time()-ST}"
+                    )
                     import sys
 
                     sys.exit(0)
