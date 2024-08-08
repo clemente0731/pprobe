@@ -15,7 +15,7 @@ def func_torch_distributed_wrapper(func):
     def wrapper(*args, **kwargs):
         if callable(func):
             result = func(*args, **kwargs)
-            if func.__module__ == 'torch.distributed' and func.__name__ == 'all_gather':
+            if func.__module__ == "torch.distributed" and func.__name__ == "all_gather":
                 print("xxxxxxx", func)
             if isinstance(args, tuple):
                 Logger.info(f"[PPROBE] torch.distributed.{func.__qualname__}")

@@ -4,10 +4,13 @@ from pprobe.utils.logging import Logger
 from typing import Any, Callable
 
 func_counts = 0
+
+
 def func_torch_step_count_wrapper(func):
     """
     torch.autograd.backward / torch.Tensor.backward
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         global func_counts
@@ -30,8 +33,9 @@ def dataloader_next_method_wrapper(original_next: Callable) -> Callable:
     """
     Decorator function to wrap the original __next__ method and add additional debug information.
     """
+
     def wrapper(self) -> Any:
-        Logger.info("[PPROBE] Iteration count ===>:", getattr(self, '_num_yielded', 'N/A'))
+        Logger.info(f"[PPROBE] Iteration count ===>:{self._num_yielded}")
         return original_next(self)
-    
+
     return wrapper
